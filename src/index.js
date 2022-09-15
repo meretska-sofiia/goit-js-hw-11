@@ -81,11 +81,10 @@ const onSearchImagesSubmit = event => {
       .fetchPhoto()
       .then(response => {
         const { data } = response;
-
-        if (pixabayApi.page === 1) {
-          Notiflix.Notify.info(`Hooray! We found ${data.totalHits} images.`);
-        }
         if (data.totalHits === 0) {
+          Notiflix.Notify.failure(
+            'Sorry, there are no images matching your search query. Please try again.'
+          );
           return;
         }
         if (data.totalHits === 1) {
@@ -94,6 +93,7 @@ const onSearchImagesSubmit = event => {
         }
 
         galleryEl.insertAdjacentHTML('beforeend', createGallery(data.hits));
+        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
         gallery.refresh();
 
         const lastCard = document.querySelector('.card:last-child');
