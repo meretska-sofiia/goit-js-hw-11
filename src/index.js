@@ -12,13 +12,18 @@ const pixabayApi = new PixabayApi();
 const gallery = new SimpleLightbox('.gallery a');
 let nextPage = 3;
 
-const infiniteObserver = new IntersectionObserver(([entry], observer) => {
-  if (entry.isIntersecting) {
-    observer.unobserve(entry.target);
+const infiniteObserver = new IntersectionObserver(
+  ([entry], observer) => {
+    if (entry.isIntersecting) {
+      observer.unobserve(entry.target);
 
-    onLoadMoreImages((nextPage += 1));
+      onLoadMoreImages((nextPage += 1));
+    }
+  },
+  {
+    rootMargin: '0px 0px 50px 0px',
   }
-});
+);
 
 const smoothScroll = () => {
   const { height: cardHeight } = document
