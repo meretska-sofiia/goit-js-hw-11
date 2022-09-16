@@ -38,35 +38,33 @@ const smoothScroll = () => {
 
 const onLoadMoreImages = () => {
   pixabayApi.page += 1;
-  pixabayApi
-    .fetchPhoto()
-    .then(response => {
-      const { data } = response;
-      smoothScroll();
+  pixabayApi.fetchPhoto().then(response => {
+    const { data } = response;
+    smoothScroll();
 
-      if (
-        data.total <= pixabayApi.page * pixabayApi.per_page ||
-        data.hits.length === 0
-      ) {
-        // makeHiddenBtn();
-        Notiflix.Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-        return;
-      }
-      galleryEl.insertAdjacentHTML('beforeend', createGallery(data.hits));
-      gallery.refresh();
-      const lastCard = document.querySelector('.card:last-child');
-
-      if (lastCard) {
-        infiniteObserver.observe(lastCard);
-      }
-    })
-    .catch(err => {
-      Notiflix.Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
+    if (
+      data.total <= pixabayApi.page * pixabayApi.per_page ||
+      data.hits.length === 0
+    ) {
+      // makeHiddenBtn();
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
       );
-    });
+      return;
+    }
+    galleryEl.insertAdjacentHTML('beforeend', createGallery(data.hits));
+    gallery.refresh();
+    const lastCard = document.querySelector('.card:last-child');
+
+    if (lastCard) {
+      infiniteObserver.observe(lastCard);
+    }
+  });
+  // .catch(err => {
+  //   Notiflix.Notify.failure(
+  //     'Sorry, there are no images matching your search query. Please try again.'
+  //   );
+  // });
 };
 
 const onSearchImagesSubmit = event => {
@@ -77,42 +75,40 @@ const onSearchImagesSubmit = event => {
   pixabayApi.searchQuery = event.currentTarget.elements.searchQuery.value;
 
   if (pixabayApi.searchQuery !== '') {
-    pixabayApi
-      .fetchPhoto()
-      .then(response => {
-        const { data } = response;
-        if (data.totalHits === 0) {
-          Notiflix.Notify.failure(
-            'Sorry, there are no images matching your search query. Please try again.'
-          );
-          return;
-        }
-        if (data.totalHits === 1) {
-          galleryEl.insertAdjacentHTML('beforeend', createGallery(data.hits));
-          return;
-        }
-
-        galleryEl.insertAdjacentHTML('beforeend', createGallery(data.hits));
-        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-        gallery.refresh();
-
-        const lastCard = document.querySelector('.card:last-child');
-
-        if (lastCard) {
-          infiniteObserver.observe(lastCard);
-        }
-        // loadMoreBtnEl.classList.remove('is-hidden');
-        // loadMoreBtnEl.addEventListener('click', onLoadMoreImages);
-
-        if (data.total <= pixabayApi.page * pixabayApi.per_page) {
-          //   makeHiddenBtn();
-        }
-      })
-      .catch(err => {
+    pixabayApi.fetchPhoto().then(response => {
+      const { data } = response;
+      if (data.totalHits === 0) {
         Notiflix.Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.'
         );
-      });
+        return;
+      }
+      if (data.totalHits === 1) {
+        galleryEl.insertAdjacentHTML('beforeend', createGallery(data.hits));
+        return;
+      }
+
+      galleryEl.insertAdjacentHTML('beforeend', createGallery(data.hits));
+      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+      gallery.refresh();
+
+      const lastCard = document.querySelector('.card:last-child');
+
+      if (lastCard) {
+        infiniteObserver.observe(lastCard);
+      }
+      // loadMoreBtnEl.classList.remove('is-hidden');
+      // loadMoreBtnEl.addEventListener('click', onLoadMoreImages);
+
+      if (data.total <= pixabayApi.page * pixabayApi.per_page) {
+        //   makeHiddenBtn();
+      }
+    });
+    // .catch(err => {
+    //   Notiflix.Notify.failure(
+    //     'Sorry, there are no images matching your search query. Please try again.'
+    //   );
+    // });
   }
   //   loadMoreBtnEl.classList.add('is-hidden');
 };

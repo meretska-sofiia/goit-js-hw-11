@@ -10,16 +10,22 @@ export class PixabayApi {
   }
 
   async fetchPhoto() {
-    const options = {
-      key: API_KEY,
-      q: this.searchQuery,
-      image_type: 'photo',
-      orientation: 'horizontal',
-      safesearch: 'true',
-      page: this.page,
-      per_page: this.per_page,
-    };
+    try {
+      const options = {
+        key: API_KEY,
+        q: this.searchQuery,
+        image_type: 'photo',
+        orientation: 'horizontal',
+        safesearch: 'true',
+        page: this.page,
+        per_page: this.per_page,
+      };
 
-    return await axios.get(`${BASE_URL}`, { params: options });
+      return await axios.get(`${BASE_URL}`, { params: options });
+    } catch (error) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
   }
 }
